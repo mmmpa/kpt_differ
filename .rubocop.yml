@@ -1,0 +1,33 @@
+Rails:
+  Enabled: true
+
+AllCops:
+  TargetRubyVersion: 2.3
+
+inherit_gem:
+  onkcop:
+    - 'config/rubocop.yml'
+
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
+Style/RegexpLiteral:
+  AllowInnerSlashes: true
+
+Style/IndentationConsistency:
+  EnforcedStyle: normal
+
+Style/RescueModifier:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - 'Rakefile'
+    - '**/*.rake'
+    - 'spec/**/*.rb'
+    - 'Gemfile'
+    - 'Guardfile'
+    - 'config/routes.rb'
+    - 'config/routes/**/*.rb'
+    - 'db/migrate/**/*'
+    - 'config/environments/*'
