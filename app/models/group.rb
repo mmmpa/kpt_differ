@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: users
+# Table name: groups
 #
 #  id         :integer          not null, primary key
 #  name       :string(255)      default(""), not null
@@ -8,8 +8,8 @@
 #  updated_at :datetime         not null
 #
 
-class User < ApplicationRecord
-  has_many :reports
+class Group < ApplicationRecord
   has_many :group_users, inverse_of: :user
-  has_many :groups, through: :group_users, inverse_of: :users
+  has_many :users, through: :group_users, inverse_of: :groups
+  has_many :binders, inverse_of: :group
 end
