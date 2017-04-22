@@ -39,15 +39,17 @@ ActiveRecord::Schema.define(version: 20170422000003) do
   end
 
   create_table "histories", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "binder_id",  null: false
     t.string   "binder_key", null: false
     t.integer  "state",      null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["binder_key"], name: "fk_rails_d039cbb823", using: :btree
+    t.index ["binder_id"], name: "index_histories_on_binder_id", using: :btree
   end
 
   create_table "reports", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id",                                    null: false
+    t.integer  "binder_id",                                  null: false
     t.string   "binder_key",                                 null: false
     t.integer  "history_id",                                 null: false
     t.integer  "newer_report_id"
@@ -56,8 +58,10 @@ ActiveRecord::Schema.define(version: 20170422000003) do
     t.text     "body",            limit: 65535,              null: false
     t.datetime "created_at",                                 null: false
     t.datetime "updated_at",                                 null: false
-    t.index ["binder_key"], name: "fk_rails_df8959742e", using: :btree
+    t.index ["binder_id"], name: "index_reports_on_binder_id", using: :btree
     t.index ["history_id"], name: "index_reports_on_history_id", using: :btree
+    t.index ["newer_report_id"], name: "fk_rails_183c1b57c3", using: :btree
+    t.index ["older_report_id"], name: "fk_rails_4835dba508", using: :btree
     t.index ["user_id"], name: "index_reports_on_user_id", using: :btree
   end
 
@@ -70,8 +74,10 @@ ActiveRecord::Schema.define(version: 20170422000003) do
   add_foreign_key "binders", "groups"
   add_foreign_key "group_users", "groups"
   add_foreign_key "group_users", "users"
-  add_foreign_key "histories", "binders", column: "binder_key", primary_key: "key"
-  add_foreign_key "reports", "binders", column: "binder_key", primary_key: "key"
+  add_foreign_key "histories", "binders"
+  add_foreign_key "reports", "binders"
   add_foreign_key "reports", "histories"
+  add_foreign_key "reports", "reports", column: "newer_report_id"
+  add_foreign_key "reports", "reports", column: "older_report_id"
   add_foreign_key "reports", "users"
 end

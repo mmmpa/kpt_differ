@@ -12,4 +12,5 @@ class User < ApplicationRecord
   has_many :reports
   has_many :group_users, inverse_of: :user
   has_many :groups, through: :group_users, inverse_of: :users
+  has_many :binders, through: :groups, inverse_of: :users
 end

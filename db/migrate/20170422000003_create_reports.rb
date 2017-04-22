@@ -2,6 +2,7 @@ class CreateReports < ActiveRecord::Migration[5.0]
   def change
     create_table :reports do |t|
       t.references :user, foreign_key: true, null: false
+      t.references :binder, foreign_key: true, null: false
       t.string :binder_key, null: false
       t.references :history, foreign_key: true, null: false
 
@@ -13,6 +14,7 @@ class CreateReports < ActiveRecord::Migration[5.0]
       t.timestamps
     end
 
-    add_foreign_key :reports, :binders, column: :binder_key, primary_key: :key
+    add_foreign_key :reports, :reports, column: :newer_report_id, primary_key: :id
+    add_foreign_key :reports, :reports, column: :older_report_id, primary_key: :id
   end
 end

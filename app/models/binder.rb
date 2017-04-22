@@ -22,13 +22,42 @@
 
 class Binder < ApplicationRecord
   belongs_to :group
-  has_many :reports, inverse_of: :binder
-  has_many :histories, inverse_of: :binder
+  has_many :users, through: :group, inverse_of: :binders
+  has_many :reports, primary_key: :key, foreign_key: :binder_key, inverse_of: :binder
+  has_many :histories, primary_key: :key, foreign_key: :binder_key, inverse_of: :binder
 
-  def start_span
-    History.create!(
-      state: :editable,
-      binder: self
-    )
+  after_validation :change_key
+
+  scope :latest, -> {
+    left_outer_joins(:histories)
+      .select(
+        arel_table[:id],
+        arel_table[:key],
+        History.arel_table[:id].maximum.as('last_history_id')
+      )
+      .group(:key)
+  }
+
+  class << self
+    def user_ids(id)
+      Binder.connection.select_rows(
+        User
+          .joins(:binders)
+          .select(User.arel_table[:id])
+          .where(Binder.arel_table[:id].eq(id))
+          .to_sql
+      )
+    end
+  end
+
+  def change_key
+    reports.update_all(binder_key: key)
+    histories.update_all(binder_key: key)
+  end
+
+  def update!(*)
+    Binder.transaction do
+      super
+    end
   end
 end

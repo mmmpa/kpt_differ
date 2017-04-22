@@ -17,6 +17,9 @@ Style/RegexpLiteral:
 Style/IndentationConsistency:
   EnforcedStyle: normal
 
+Layout/DotPosition:
+  EnforcedStyle: leading
+
 Style/RescueModifier:
   Enabled: false
 

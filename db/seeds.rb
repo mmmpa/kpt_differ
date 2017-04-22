@@ -1,4 +1,4 @@
-group = Group.create!(name: 'First group')
+group = Group.create!(name: 'KPT')
 
 %w(
   Keep
@@ -13,6 +13,9 @@ group = Group.create!(name: 'First group')
   )
 end
 
-User.create!(groups: [group])
-User.create!(groups: [group])
-User.create!(groups: [group])
+20.times do |n|
+  User.create!(
+    name: "ユーザー #{n}",
+    groups: [group]
+  )
+end
