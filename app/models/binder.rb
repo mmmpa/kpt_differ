@@ -25,16 +25,13 @@ class Binder < ApplicationRecord
   belongs_to :group
   has_many :users, through: :group, inverse_of: :binders
   has_many :reports, inverse_of: :binder
-  has_many :histories, inverse_of: :binder
 
   after_validation :change_key
 
   scope :latest, -> {
-    left_outer_joins(:histories)
-      .select(
+      select(
         arel_table[:id],
-        arel_table[:key],
-        History.arel_table[:id].maximum.as('last_history_id')
+        arel_table[:key]
       )
       .group(:id)
   }
@@ -53,7 +50,6 @@ class Binder < ApplicationRecord
 
   def change_key
     reports.update_all(binder_key: key)
-    histories.update_all(binder_key: key)
   end
 
   def update!(*)

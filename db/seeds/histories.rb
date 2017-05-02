@@ -4,6 +4,9 @@ History.delete_all
 kpt = Group.find_by(name: 'KPT')
 weekly = Group.find_by(name: 'Weekly Report')
 
+kpt.prepare_report!
+weekly.prepare_report!
+
 [5, 4, 3, 2, 1].each do |n|
   kpt.start_span!(at: Time.zone.now - n.weeks)
   weekly.start_span!(at: Time.zone.now - n.weeks)

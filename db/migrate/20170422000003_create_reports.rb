@@ -7,15 +7,14 @@ class CreateReports < ActiveRecord::Migration[5.0]
       t.string :binder_key, null: false
       t.references :history, foreign_key: true, null: false
 
-      t.integer :newer_report_id
       t.integer :older_report_id
       t.string :title, null: false, default: ''
       t.text :body, null: false
+      t.text :diff, null: false
 
       t.timestamps
     end
 
-    add_foreign_key :reports, :reports, column: :newer_report_id, primary_key: :id
     add_foreign_key :reports, :reports, column: :older_report_id, primary_key: :id
   end
 end

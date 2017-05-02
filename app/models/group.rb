@@ -13,44 +13,64 @@ class Group < ApplicationRecord
   has_many :group_users, inverse_of: :user
   has_many :users, through: :group_users, inverse_of: :groups
   has_many :binders, inverse_of: :group
+  has_many :histories, inverse_of: :group
 
-  def start_span!(at: Time.zone.now)
-    Report.transaction do
-      # バインダーごとの最新のヒストリーの id を得る
-      # [binder_id, history_id]
-      binder_ids = Binder.connection.select_rows(binders.latest.to_sql)
+  # ユーザー追加時、レポート追加時に実行が望ましい
+  def prepare_report!
+    user_ids = users.ids
+    latest_history_id = latest_history.id
 
-      # バインダーごとの最新のヒストリーをコンクリートする
-      History.where(id: binder_ids.map(&:last)).update_all(state: :concreted)
+    nested_reports = binders.pluck(:id, :key).map do |binder_id, binder_key|
+      newer_user_ids = user_ids - Report.where(binder_id: binder_id).select(:user_id).distinct.pluck(:user_id)
 
-      # 現在の最新のヒストリーにひもづくレポートを、新たに作成したヒストリー上に複製する
-      binder_ids.map do |binder_id, binder_key, latest_history_id|
-        new_history_id = History.create!(
+      newer_user_ids.map do |user_id|
+        Report.new(
+          user_id: user_id,
           binder_id: binder_id,
           binder_key: binder_key,
-          state: :editable,
-          created_at: at
-        ).id
-        report_ids = Report.where(history_id: latest_history_id).ids
-
-        copy_on!(report_ids, new_history_id, binder_key, at)
+          history_id: latest_history_id,
+          body: '',
+          diff: ''
+        )
       end
     end
 
+    reports = nested_reports.flatten
+
+    Report.import!(reports.flatten, validate: true) if reports.size != 0
   end
 
-  def copy_on!(report_ids, new_history_id, binder_key, at)
-    now = at.to_s(:db)
+  def start_span!(at: Time.zone.now)
+    Report.transaction do
+      latest_history.update!(state: :concreted)
+
+      copy!(
+        now: at.to_s(:db),
+        latest_history_id: latest_history.id,
+        new_history_id: histories.create!(state: :editable).id,
+      )
+    end
+  end
+
+  private
+
+  def latest_history
+    @latest_history ||= histories.order(created_at: :desc).first || histories.create!(state: :editable)
+  end
+
+  def copy!(now:, latest_history_id:, new_history_id:)
+    report_ids = Report.where(history_id: latest_history.id).ids
+
+    return if report_ids.size == 0
 
     sql = <<-SQL
       insert 
-      into reports (id,   hex,    user_id, binder_id, binder_key, history_id,        newer_report_id, older_report_id, title, body, created_at, updated_at)
-      select        NULL, UUID(), user_id, binder_id, binder_key, #{new_history_id}, newer_report_id, id,              title, body, '#{now}', '#{now}'
+      into reports (id,   hex,    user_id, binder_id, binder_key, history_id,        older_report_id, title, body, diff, created_at, updated_at)
+      select        NULL, UUID(), user_id, binder_id, binder_key, #{new_history_id}, id,              title, body, ''  , '#{now}', '#{now}'
       from reports
       where id in (#{report_ids.join(',')})
     SQL
 
     Report.connection.select_rows(sql)
   end
-
 end
