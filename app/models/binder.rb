@@ -3,6 +3,7 @@
 # Table name: binders
 #
 #  id          :integer          not null, primary key
+#  hex         :string(255)      not null
 #  group_id    :integer          not null
 #  key         :string(255)      not null
 #  name        :string(255)      not null
@@ -23,8 +24,8 @@
 class Binder < ApplicationRecord
   belongs_to :group
   has_many :users, through: :group, inverse_of: :binders
-  has_many :reports, primary_key: :key, foreign_key: :binder_key, inverse_of: :binder
-  has_many :histories, primary_key: :key, foreign_key: :binder_key, inverse_of: :binder
+  has_many :reports, inverse_of: :binder
+  has_many :histories, inverse_of: :binder
 
   after_validation :change_key
 
@@ -35,7 +36,7 @@ class Binder < ApplicationRecord
         arel_table[:key],
         History.arel_table[:id].maximum.as('last_history_id')
       )
-      .group(:key)
+      .group(:id)
   }
 
   class << self

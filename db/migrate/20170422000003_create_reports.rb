@@ -1,6 +1,7 @@
 class CreateReports < ActiveRecord::Migration[5.0]
   def change
     create_table :reports do |t|
+      t.string :hex, null: false
       t.references :user, foreign_key: true, null: false
       t.references :binder, foreign_key: true, null: false
       t.string :binder_key, null: false

@@ -3,6 +3,7 @@
 # Table name: histories
 #
 #  id         :integer          not null, primary key
+#  hex        :string(255)      not null
 #  binder_id  :integer          not null
 #  binder_key :string(255)      not null
 #  state      :integer          not null
@@ -21,7 +22,7 @@
 class History < ApplicationRecord
   attr_accessor :latest_history_id
 
-  belongs_to :binder, primary_key: :key, foreign_key: :binder_key, inverse_of: :histories
+  belongs_to :binder, inverse_of: :histories
   has_many :reports, inverse_of: :history
 
   enum state: { editable: 1, concreted: 2 }

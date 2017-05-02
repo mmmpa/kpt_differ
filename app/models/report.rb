@@ -3,6 +3,7 @@
 # Table name: reports
 #
 #  id              :integer          not null, primary key
+#  hex             :string(255)      not null
 #  user_id         :integer          not null
 #  binder_id       :integer          not null
 #  binder_key      :string(255)      not null
@@ -33,11 +34,20 @@
 
 class Report < ApplicationRecord
   belongs_to :user, inverse_of: :reports
-  belongs_to :binder, primary_key: :key, foreign_key: :binder_key, inverse_of: :reports
+  belongs_to :binder, inverse_of: :reports
   belongs_to :history, inverse_of: :reports
 
   belongs_to :newer, class_name: Report, foreign_key: :newer_report_id, inverse_of: :older
   belongs_to :older, class_name: Report, foreign_key: :older_report_id, inverse_of: :newer
+
+  scope :index, -> {
+    left_outer_joins(:newer, :older)
+      .select(
+        :body,
+        'newers_reports.body as newer_body',
+        'olders_reports.body as older_body',
+      )
+  }
 
   class << self
     def prepare!(new_history_id:, binder_id:, binder_key:, latest_history_id:)

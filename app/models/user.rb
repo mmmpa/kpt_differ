@@ -3,6 +3,7 @@
 # Table name: users
 #
 #  id         :integer          not null, primary key
+#  hex        :string(255)      not null
 #  name       :string(255)      default(""), not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
