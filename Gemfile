@@ -32,9 +32,13 @@ group :default do
   gem 'authlogic'
   gem 'jquery-rails'
   gem 'kaminari'
+  gem 'markdiff'
+  gem 'redcarpet'
+  gem 'pygments.rb'
   gem 'slim-rails'
   gem 'sweet-alert-confirm'
   gem 'therubyracer'
+  gem 'rack-cors', :require => 'rack/cors'
   gem 'html2slim'
   gem 'brakeman', require: false
   gem 'rubocop', require: false

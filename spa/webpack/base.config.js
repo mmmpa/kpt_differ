@@ -1,9 +1,10 @@
 const webpack = require('webpack');
+const PreBuild = require('./plugins/pre-build');
 
 const jsConfiguration = {
   entry: ['babel-polyfill', './src/es/index.js'],
   output: {
-    publicPath: 'javascripts',
+    publicPath: 'javascripts/',
     filename: 'spa.js'
   },
   module: {
@@ -36,6 +37,9 @@ const jsConfiguration = {
     }),
     new webpack.DefinePlugin({
       '__DIR__': JSON.stringify(process.env.NODE_ENV),
+    }),
+    new PreBuild(function () {
+      require('./component-picking.js');
     }),
   ],
   resolve: {

@@ -7,6 +7,9 @@ Rails.application.routes.draw do
     get    '@:user_id/:binder_key/reports'            => 'api/users/reports#index'
     get    '@:user_id/:binder_key/reports/:report_id' => 'api/users/reports#show'
     put    '@:user_id/:binder_key/reports/:report_id' => 'api/users/reports#update'
+
+    post   'markdowns'                                => 'api/markdowns#create'
+    post   'markdowns/diff'                           => 'api/markdowns/diff#create'
   end
 
   scope :admins do

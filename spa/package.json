@@ -6,6 +6,7 @@
   "scripts": {
     "watch": "webpack-dev-server --inline --hot --progress --colors --config ./webpack/dev.config.js --port 5006 --content-base ../public",
     "watch-sass": "node-sass --watch ./src/sass/index.sass ../public/stylesheets/spa.css",
+    "pick-components": "babel-node ./webpack/component-picking.js",
     "test": "mocha -w --compilers js:babel-register 'tests/**/*-test.js'"
   },
   "dependencies": {

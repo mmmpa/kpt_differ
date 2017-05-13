@@ -1,2 +1,21 @@
+@import 'bootstrap'
+@import 'bootswatch'
+@import 'variables'
+@import 'github-markdown'
+
 body
   font-size: 35px
+  padding: 50px
+
+.editor
+  &.html textarea
+    height: 10em
+.preview-diff
+  .markdown-body
+    .changed
+      del
+        color: $brand-danger
+        background: #fbd2d4
+      ins
+        color: $brand-success
+        background: #d8efd9
