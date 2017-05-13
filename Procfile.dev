@@ -1,0 +1,3 @@
+web: bundle exec rails server -p 5005
+compile: cd spa && yarn run watch
+compile: cd spa && yarn run watch-sass

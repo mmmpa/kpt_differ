@@ -1,0 +1,10 @@
+doctype html
+html
+  head
+    title
+      | Kpt
+    = csrf_meta_tags
+    = stylesheet_link_tag 'spa.css'
+    = javascript_include_tag 'spa.js'
+  body
+    = yield

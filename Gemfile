@@ -42,6 +42,7 @@ group :default do
 end
 
 group :development, :test do
+  gem 'foreman'
   gem 'tanemaki'
   gem 'spring-commands-rspec'
   gem 'factory_girl_rails'

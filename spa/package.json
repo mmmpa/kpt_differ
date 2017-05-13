@@ -4,9 +4,8 @@
   "main": "./src/index.js",
   "license": "",
   "scripts": {
-    "dev-server": "webpack-dev-server --inline --hot --progress --colors --config ./webpack/dev.config.js --port 5050 --content-base ./public",
-    "build-pro": "webpack --progress --colors --config ./webpack/pro.config.js",
-    "build-ssr-dev": "webpack -w --progress --colors --config ./webpack/server.dev.config.js",
+    "watch": "webpack-dev-server --inline --hot --progress --colors --config ./webpack/dev.config.js --port 5006 --content-base ../public",
+    "watch-sass": "node-sass --watch ./src/sass/index.sass ../public/stylesheets/spa.css",
     "test": "mocha -w --compilers js:babel-register 'tests/**/*-test.js'"
   },
   "dependencies": {
@@ -33,7 +32,9 @@
     "eslint-loader": "^1.7.1",
     "eslint-plugin-no-storage": "^1.0.2",
     "eslint-plugin-vue": "^2.0.1",
+    "extract-text-webpack-plugin": "^2.1.0",
     "mocha": "^3.2.0",
+    "node-sass": "^4.5.2",
     "pug": "^2.0.0-beta11",
     "vue-devtools": "^3.0.8",
     "vue-loader": "^11.3.4",

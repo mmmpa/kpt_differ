@@ -28,4 +28,7 @@ Rails.application.routes.draw do
     get    '@:user_id'                                => 'admins/users#show'
     get    '@:user_id/:binder_key/reports'            => 'admins/users/report#index'
   end
+
+  root to: 'traps#index'
+  get '*path' => 'traps#index'
 end

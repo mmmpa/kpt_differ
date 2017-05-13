@@ -1,10 +1,10 @@
 const webpack = require('webpack');
 
-module.exports = {
-  entry: ['babel-polyfill', './src/browser-index.js'],
+const jsConfiguration = {
+  entry: ['babel-polyfill', './src/es/index.js'],
   output: {
     publicPath: 'javascripts',
-    filename: 'built.js'
+    filename: 'spa.js'
   },
   module: {
     rules: [
@@ -51,3 +51,29 @@ module.exports = {
     hints: false
   },
 };
+
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const cssConfiguration = {
+  entry: './src/sass/common.sass',
+  output: {
+    publicPath: 'stylesheets',
+    filename: "common.css"
+  },
+  module: {
+    loaders: [
+      {
+        test: /\.sass|\.scss/,
+        loader: ExtractTextPlugin.extract({
+          fallbackLoader: "style-loader",
+          loader: "css-loader?minimize!sass-loader",
+          publicPath: 'stylesheets',
+        })
+      }
+    ]
+  },
+  plugins: [
+    new ExtractTextPlugin("common.css")
+  ]
+};
+
+module.exports = jsConfiguration;

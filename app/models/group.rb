@@ -59,7 +59,7 @@ class Group < ApplicationRecord
   end
 
   def copy!(now:, latest_history_id:, new_history_id:)
-    report_ids = Report.where(history_id: latest_history.id).ids
+    report_ids = Report.where(history_id: latest_history_id).ids
 
     return if report_ids.size == 0
 
